@@ -1,6 +1,6 @@
 const http = require("http");
 const jwt = require("jsonwebtoken");
-const syncRequest = require("sync-request");
+const urllib = require("urllib");
 
 const config = require("./config.json");
 var filesDict = {};
@@ -9,21 +9,33 @@ var cache = null;
 setTimeout(() => cache = null, config.cacheCleanerTimer);
 
 const getDefJson = function() {
-    if (cache == null) {
-        let response = syncRequest("GET", config.serviceUrl + 'data/def.json');
-        let data = JSON.parse(response.getBody().toString());
-        for (let i in data) {
-            let doc = data[i];
-            filesDict[doc.id] = doc;
+    let files = [];
+    return new Promise((resolve, reject) => {
+        if (cache == null) {
+            let requestUrl = config.configsUrl + (config.configsUrl.slice(-1) == '/' ? 'data/def.json' : '/data/def.json');
+            urllib.request(requestUrl, {method: "GET"}, (err, data) => {
+                if (data) {
+                    let result = JSON.parse(data.toString());
+                    for (let i in result) {
+                        let doc = result[i];
+                        files[doc.id] = doc;
+                    }
+                }
+                cache = files;
+                resolve(files);
+            });
+        } else {
+            resolve(cache);
         }
-    } else {
-        filesDict = cache;
-    }
+    });
 };
 
-getDefJson();
 
-const configHandler = function (req, res, params) {
+const configHandler = async function (req, res, params) {
+    await getDefJson().then((result) => {
+        filesDict = result;
+    });
+
     let docId = params[0];
     if (!docId || !filesDict[docId]) {
         res.writeHead(404);

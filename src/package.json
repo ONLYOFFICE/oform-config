@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "jsonwebtoken": "^8.5.1",
-    "sync-request": "^6.1.0"
+    "urllib": "^2.36.1"
   }
 }

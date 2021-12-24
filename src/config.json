@@ -1,6 +1,7 @@
 {
     "port": 1337,
     "jwtSecret": "",
+    "configsUrl": "",
     "serviceUrl": "http://localhost:1337",
     "cacheCleanerTimer": 3600000
 }
