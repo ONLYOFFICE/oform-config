@@ -34,7 +34,12 @@ const configHandler = function (req, res, params) {
             },
         },
         editorConfig: {
-            callbackurl: config.serviceUrl + "/callback"
+            callbackurl: config.serviceUrl + "/callback",
+            customization: {
+                anonymous: {
+                    request: false
+                },
+            }
         },
         documentType: "word",
         height: "100%",
