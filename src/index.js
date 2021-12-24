@@ -34,6 +34,10 @@ const configHandler = function (req, res, params) {
     let doc = filesDict[docId];
 
     res.setHeader("Content-Type", "application/json");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Request-Method", "*");
+    res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
+    res.setHeader("Access-Control-Allow-Headers", "*");
     res.writeHead(200);
 
     let docConfig = {
