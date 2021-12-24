@@ -12,8 +12,7 @@ const getDefJson = function() {
     let files = [];
     return new Promise((resolve, reject) => {
         if (cache == null) {
-            let requestUrl = config.configsUrl + (config.configsUrl.slice(-1) == '/' ? 'data/def.json' : '/data/def.json');
-            urllib.request(requestUrl, {method: "GET"}, (err, data) => {
+            urllib.request(config.configsUrl, {method: "GET"}, (err, data) => {
                 if (data) {
                     let result = JSON.parse(data.toString());
                     for (let i in result) {
