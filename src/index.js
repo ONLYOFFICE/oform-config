@@ -1,14 +1,27 @@
 const http = require("http");
 const jwt = require("jsonwebtoken");
+const syncRequest = require("sync-request");
 
 const config = require("./config.json");
-const filesDef = require("./def.json");
-const filesDict = {};
+var filesDict = {};
+var cache = null;
 
-for (var i in filesDef) {
-    let doc = filesDef[i];
-    filesDict[doc.id] = doc;
-}
+setTimeout(() => cache = null, config.cacheCleanerTimer);
+
+const getDefJson = function() {
+    if (cache == null) {
+        let response = syncRequest("GET", config.serviceUrl + 'data/def.json');
+        let data = JSON.parse(response.getBody().toString());
+        for (let i in data) {
+            let doc = data[i];
+            filesDict[doc.id] = doc;
+        }
+    } else {
+        filesDict = cache;
+    }
+};
+
+getDefJson();
 
 const configHandler = function (req, res, params) {
     let docId = params[0];
