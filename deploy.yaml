@@ -16,16 +16,13 @@ spec:
       labels:
         app: oform-config
     spec:
-    #  securityContext:
-    #    runAsUser: 104
-    #    runAsGroup: 107
       containers:
       - name: oform-config
         image: onlyoffice/oform-config:latest
         imagePullPolicy: IfNotPresent
-#        envFrom:
-#        - secretRef:
-#            name: oform-config
+        envFrom:
+        - secretRef:
+            name: oform-config
         ports:
         - containerPort: 1337
           name: http
@@ -43,3 +40,12 @@ spec:
   selector:
     app: oform-config
   type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: oform-config
+type: Opaque
+stringData:
+  JWT_SECRET: MYSECRET
