@@ -20,12 +20,17 @@ spec:
       - name: oform-config
         image: onlyoffice/oform-config:latest
         imagePullPolicy: IfNotPresent
-        envFrom:
-        - secretRef:
-            name: oform-config
         ports:
         - containerPort: 1337
           name: http
+        volumeMounts:
+        - name: oform-config
+          mountPath: /usr/src/app/config.json
+          subPath: config.json
+      volumes:
+      - name: oform-config
+        configMap:
+          name: oform-config
 
 ---
 apiVersion: v1
@@ -43,9 +48,15 @@ spec:
 
 ---
 apiVersion: v1
-kind: Secret
+kind: ConfigMap
 metadata:
   name: oform-config
-type: Opaque
-stringData:
-  JWT_SECRET: MYSECRET
+data:
+  config.json: |-
+    {
+        "port": 1337,
+        "jwtSecret": "",
+        "configsUrl": "",
+        "serviceUrl": "http://localhost:1337",
+        "cacheCleanerTimer": 3600000
+    }
