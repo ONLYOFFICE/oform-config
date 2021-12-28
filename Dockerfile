@@ -10,7 +10,7 @@ RUN npm install
 
 COPY ./src/* ./
 
-EXPOSE 1337
+EXPOSE 80 1337
 
 CMD [ "node", "index.js" ]
 

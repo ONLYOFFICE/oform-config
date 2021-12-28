@@ -18,10 +18,10 @@ spec:
     spec:
       containers:
       - name: oform-config
-        image: onlyoffice/oform-config:latest
+        image: onlyoffice/oform-config:1.0.0
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 1337
+        - containerPort: 80
           name: http
         volumeMounts:
         - name: oform-config
@@ -41,10 +41,10 @@ spec:
   ports:
   - port: 80
     name: http
-    targetPort: 1337
+    targetPort: 80
   selector:
     app: oform-config
-  type: LoadBalancer
+  type: ClusterIP
 
 ---
 apiVersion: v1
@@ -54,9 +54,9 @@ metadata:
 data:
   config.json: |-
     {
-        "port": 1337,
+        "port": 80,
         "jwtSecret": "",
         "configsUrl": "",
-        "serviceUrl": "http://localhost:1337",
+        "serviceUrl": "http://localhost",
         "cacheCleanerTimer": 3600000
     }
