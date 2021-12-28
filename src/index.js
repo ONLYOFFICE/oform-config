@@ -29,6 +29,13 @@ const getDefJson = function() {
     });
 };
 
+const generateKey = function () {
+    let key = '';
+    while (key.length < 30) {
+        key +=  Math.floor(Math.random() * 10);
+    }
+    return key;
+};
 
 const configHandler = async function (req, res, params) {
     if (config.configsUrl) {
@@ -56,10 +63,12 @@ const configHandler = async function (req, res, params) {
     res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
     res.setHeader("Access-Control-Allow-Headers", "*");
     res.writeHead(200);
-    let url = /(http(s?)):\/\//.test(doc.link_oform_filling_file) ? doc.link_oform_filling_file : config.configsUrl.replace('/def.json', '') + doc.link_oform_filling_file;
+    let sbtrUrl = config.configsUrl.charAt(config.configsUrl.lastIndexOf('/') - 1) == '/' ? config.configsUrl : config.configsUrl.substring(0, config.configsUrl.lastIndexOf('/'));
+    let url = /(http(s?)):\/\//.test(doc.link_oform_filling_file) ? doc.link_oform_filling_file : sbtrUrl + doc.link_oform_filling_file;
 
     let docConfig = {
         document: {
+            key: 'oform_' + generateKey(),
             fileType: "oform",
             title: doc.name,
             url: url,
