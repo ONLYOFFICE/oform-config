@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oform-config
+  labels:
+    app: oform-config
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: oform-config
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: oform-config
+    spec:
+      containers:
+      - name: oform-config
+        image: onlyoffice/oform-config:1.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: oform-config
+          mountPath: /usr/src/app/config.json
+          subPath: config.json
+      volumes:
+      - name: oform-config
+        configMap:
+          name: oform-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oform-config
+spec:
+  ports:
+  - port: 80
+    name: http
+    targetPort: 80
+  selector:
+    app: oform-config
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oform-config
+data:
+  config.json: |-
+    {
+        "port": 80,
+        "jwtSecret": "",
+        "configsUrl": "",
+        "serviceUrl": "http://localhost",
+        "cacheCleanerTimer": 3600000
+    }
