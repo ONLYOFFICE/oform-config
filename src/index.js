@@ -12,8 +12,8 @@ const getDefJson = function() {
     let files = [];
     return new Promise((resolve, reject) => {
         if (cache == null) {
-            urllib.request(config.configsUrl, {method: "GET"}, (err, data) => {
-                if (data) {
+            urllib.request(config.configsUrl, {method: "GET"}, (err, data, res) => {
+                if (data && res.status == 200) {
                     let result = JSON.parse(data.toString());
                     for (let i in result) {
                         let doc = result[i];
@@ -31,9 +31,15 @@ const getDefJson = function() {
 
 
 const configHandler = async function (req, res, params) {
-    await getDefJson().then((result) => {
-        filesDict = result;
-    });
+    if (config.configsUrl) {
+        await getDefJson().then((result) => {
+            filesDict = result;
+        });
+    } else {
+        res.writeHead(404);
+        res.end();
+        return;
+    }
 
     let docId = params[0];
     if (!docId || !filesDict[docId]) {
@@ -50,12 +56,13 @@ const configHandler = async function (req, res, params) {
     res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
     res.setHeader("Access-Control-Allow-Headers", "*");
     res.writeHead(200);
+    let url = /(http(s?)):\/\//.test(doc.link_oform_filling_file) ? doc.link_oform_filling_file : config.configsUrl.replace('/def.json', '') + doc.link_oform_filling_file;
 
     let docConfig = {
         document: {
             fileType: "oform",
             title: doc.name,
-            url: doc.link_oform_filling_file,
+            url: url,
             permissions: {
                 edit: false,
                 fillForms: true,
