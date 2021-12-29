@@ -30,11 +30,7 @@ const getDefJson = function() {
 };
 
 const generateKey = function () {
-    let key = '';
-    while (key.length < 30) {
-        key +=  Math.floor(Math.random() * 10);
-    }
-    return key;
+    return (Math.random() + "." + Math.random()).replace(/\./g, "");
 };
 
 const configHandler = async function (req, res, params) {
