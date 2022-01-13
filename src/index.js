@@ -74,7 +74,7 @@ const configHandler = async function (req, res, params) {
             },
         },
         editorConfig: {
-            callbackurl: config.serviceUrl + "/callback",
+            callbackUrl: config.serviceUrl + "/callback",
             customization: {
                 anonymous: {
                     request: false
